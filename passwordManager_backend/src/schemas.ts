@@ -3,6 +3,8 @@ import {z} from "zod";
 import { ZodError } from "zod";
 import { Response } from "express";
 
+
+
 export const zodInputError = (zodError:ZodError,res:Response)=> {
     const error = zodError.format();
     console.error("Invalid inputs: ",error);
@@ -28,7 +30,7 @@ const UserMongooseSchema = new mongoose.Schema({
     username: String,
     password: String
 })
-const DataMongooseSchema = new mongoose.Schema({
+export const DataMongooseSchema = new mongoose.Schema({
     url: {type: String, required: true},
     websiteName: {type: String, required: false},
     username: {type: String, required: true},

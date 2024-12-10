@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectToDatabase = exports.DataMongoose = exports.UserMongoose = exports.UserZod = exports.DataZod = exports.idZod = exports.zodInputError = void 0;
+exports.connectToDatabase = exports.DataMongoose = exports.UserMongoose = exports.DataMongooseSchema = exports.UserZod = exports.DataZod = exports.idZod = exports.zodInputError = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const zod_1 = require("zod");
 const zodInputError = (zodError, res) => {
@@ -36,14 +36,14 @@ const UserMongooseSchema = new mongoose_1.default.Schema({
     username: String,
     password: String
 });
-const DataMongooseSchema = new mongoose_1.default.Schema({
+exports.DataMongooseSchema = new mongoose_1.default.Schema({
     url: { type: String, required: true },
     websiteName: { type: String, required: false },
     username: { type: String, required: true },
     password: { type: String, required: true }
 });
 exports.UserMongoose = mongoose_1.default.model('User', UserMongooseSchema);
-exports.DataMongoose = mongoose_1.default.model('Data', DataMongooseSchema);
+exports.DataMongoose = mongoose_1.default.model('Data', exports.DataMongooseSchema);
 const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect('mongodb+srv://shavishanky:Changec110.@cluster0.wfyiwkz.mongodb.net/', {

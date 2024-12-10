@@ -15,32 +15,30 @@ router.post('/signup', async(req:Request,res:Response)=>{
         try{
             const existingUser = await UserMongoose.findOne({username: user.data.username})
             if(existingUser){
-                return res.status(400).json({message: "User already exists"});
+                return res.status(400).json({message: "User already exists",success:false});
             }
             else{
                 const newUser = new UserMongoose({username: user.data.username , password: user.data.password});
                 try{
                     await newUser.save();
                     const token = generateJwt(user.data);
-                    return res.status(200).json({message: "Signed Up successfully",token})
+                    return res.status(200).json({message: "Signed Up successfully",token,success:true})
                 }
                 catch(error){
                     console.error("Error Saving to UserMongoose: ",error);
-                    return res.status(500).json({message: "Internal server error"});
+                    return res.status(500).json({message: "Internal server error",success:false});
                 }
             }
         }
         catch(error){
             console.error("Error reading UserMongoose: ",error);
-            res.status(500).json({message: "Internal server error"})
+            res.status(500).json({message: "Internal server error",success:false})
         }
     }
 })
         
 router.post('/signin',async(req:Request,res)=>{
-    console.log("Request body:", req.body);  // Add this line for debugging
     const user = UserZod.safeParse(req.body);
-    console.log("Parsed user:", user);  // Add this line for debugging   
      if(!user.success){
         zodInputError(user.error,res);
     }
@@ -72,6 +70,10 @@ router.get('/',authenticateJwt,async(req:Request,res:Response)=>{
         console.error("Error reading dataMongoose: ",error);
         res.status(500).json({message: "Internal server error"})
     }
+})
+
+router.get('/me',authenticateJwt,async(req:Request,res:Response)=>{  //accessed to make appbar dynamic(called when appbar is loaded) or to get the username
+    res.json({username: req.headers["username"]})
 })
 
 router.post('/',authenticateJwt,async(req:Request,res:Response)=>{
@@ -154,7 +156,7 @@ router.delete("/:id",authenticateJwt,async(req,res)=>{
     else{
         try{
             const idObj = new mongoose.Types.ObjectId(id.data);
-;            const deletedData = await DataMongoose.findByIdAndDelete(idObj);
+            const deletedData = await DataMongoose.findByIdAndDelete(idObj);
             if(deletedData){
                 res.status(200).json({message: "Site entry deleted successfully",deletedData});
             }
@@ -165,8 +167,7 @@ router.delete("/:id",authenticateJwt,async(req,res)=>{
         catch(error){
             console.error("Error reading DataMongoose while deletion: ",error);
             res.status(500).json({message: "Internal server error ",error});
-        }
-        
+        } 
     }
 })
 

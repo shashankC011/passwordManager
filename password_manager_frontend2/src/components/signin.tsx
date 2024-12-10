@@ -1,10 +1,16 @@
 import { Typography,TextField,Button } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-function Signup(){
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+interface Props{
+    appbarRefresh: number,
+    setAppbarRefresh: React.Dispatch<React.SetStateAction<number>>;
+}
+function Signin(props:Props){
+    const [username,setUsername] = useState("");
+    const [password,setPassword] = useState("");
     const navigate = useNavigate();
+    let appbarRefresh = props.appbarRefresh;
+    const setAppbarRefresh = props.setAppbarRefresh;
     return(
         <div>
             <div style={{
@@ -14,13 +20,14 @@ function Signup(){
                 alignItems:"center",
                 height: "60vh"
             }}>
-                <Typography>Sign up below</Typography>
+                <Typography>Sign in below</Typography>
                 <div style={{
                         marginTop: 15,
                         display: "flex",
                         justifyContent: "center"
                     }}>
                     <TextField  
+                    onChange={e=>setUsername(e.target.value)}
                     placeholder="Enter username"
                     sx={{
                         "& .MuiOutlinedInput-root": {
@@ -29,7 +36,6 @@ function Signup(){
                             }
                         }
                     }}
-                    onChange={e=>setUsername(e.target.value)}
                         InputProps={{ 
                         style: {
                             backgroundColor: "white",
@@ -43,9 +49,9 @@ function Signup(){
                         marginTop:"2vh"
                     }}>
                         <TextField  
+                        onChange={e=>setPassword(e.target.value)}
                         type ="password"
                         placeholder="Enter password"
-                        onChange={e=>setPassword(e.target.value)}
                         sx={{
                             "& .MuiOutlinedInput-root": {
                                 "&.Mui-focused fieldset": {
@@ -67,26 +73,40 @@ function Signup(){
                         width:"30vw",
                         justifyContent: "flex-start",
                     }}>
-                        <Button onClick={()=>{
-                            fetch("http://localhost:5005/signup",{
-                                method:"POST",
-                                headers: {
+                        <Button onClick={async()=>{
+                            try{
+                                const res = await fetch("http://localhost:5005/signin",{
+                                method: "POST",
+                                headers:{
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
                                     username: username,
                                     password: password
                                 })
-                            }).then(response=>{
-                                if(!response.ok){
-                                    throw new Error("Network response was not ok" + response.statusText);
-                                }
-                                return response.json();
-                            }).then(data=>{
-                                localStorage.setItem("Authorization","token " + data.token);
-                                navigate('/home');
                             })
-                        }}style={{
+                            if(!res.ok){
+                                const data = await res.json();
+                                alert(data.message || "Something went wrong");
+                                return;
+                            }
+
+                            const data = await res.json();
+
+                            if(data.success === false){
+                                alert(data.messge + "from inside data.success")
+                                return;
+                            }
+                            localStorage.setItem("Authorization", "token "+data.token);
+                            navigate('/home');
+                            setAppbarRefresh(e=>e+1);
+                        }
+                        catch(error){
+                            console.error("Error during signup:", error);
+                            alert("An unexpected error occurred. Please try again later.");
+                        }
+                        }}
+                        style={{
                             color: "black",
                             backgroundColor: "rgb(93,227,148)",
                             marginTop: "1.5vh",
@@ -97,11 +117,11 @@ function Signup(){
                             minWidth: "6vw",
                             height: "4vh"
                             }}>
-                            Sign up                        
+                            Sign in                        
                         </Button>
                     </div>
             </div>
         </div>
     )
 }
-export default Signup;
+export default Signin;

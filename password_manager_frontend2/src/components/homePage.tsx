@@ -1,11 +1,20 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import YourPasswords from "./yourPasswords";
-function Home(){
+import { METHODS } from "http";
+
+interface Props{
+    appbarRefresh: number,
+    setAppbarRefresh: React.Dispatch<React.SetStateAction<number>>;
+}
+function Home(props:Props){
     const [url,seturl]=useState("");
     const[websiteName,setWebsiteName]=useState("");
     const[username,setUsername]=useState("");
     const[password,setPassword] =useState("");
+    let [state, setState] = useState(0);
+    let appbarRefresh = props.appbarRefresh;
+    const setAppbarRefresh = props.setAppbarRefresh;    
     useEffect(()=>{
     },[])
     return(
@@ -52,7 +61,8 @@ function Home(){
                 justifyContent: "space-between",
                 alignItems: "center"
             }}>
-            <TextField  
+            <TextField 
+            onChange={e=>setWebsiteName(e.target.value)} 
             placeholder="Enter Website Name"
             sx={{
                 "& .MuiOutlinedInput-root": {
@@ -88,7 +98,8 @@ function Home(){
                     border:"1px solid #15a13a",
                     height: 33
             }}}/>
-                <TextField  
+                <TextField 
+                onChange={e=>setPassword(e.target.value)} 
                 placeholder="Enter Password"
                 type="password"
                 sx={{
@@ -108,7 +119,32 @@ function Home(){
             }}}/>
             </div>
             <div>
-                <Button style={{
+                <Button
+                onClick ={
+                    async()=>{
+                    const res = await fetch("http://localhost:5005/",{
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `${localStorage.getItem(`Authorization`)}`
+                        },
+                        body: JSON.stringify({
+                            username: username,
+                            password : password,
+                            url: url,
+                            websiteName: websiteName
+                            })
+                        })
+                        if(!res.ok){
+                            const data = await res.json();
+                            alert(data.message);
+                            return;
+                        }
+                        const data = await res.json();
+                        setState(++state);
+                    }
+                } 
+                style={{
                     color: "black",
                     backgroundColor: "rgb(93,227,148)",
                     marginTop: "2vh",
@@ -122,7 +158,7 @@ function Home(){
                 Save                        
                 </Button>
             </div>
-            <YourPasswords/>
+            <YourPasswords  state={state} setState = {setState}/>
         </div>
     )
 }

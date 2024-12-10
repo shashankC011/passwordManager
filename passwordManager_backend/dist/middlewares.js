@@ -20,6 +20,8 @@ const authenticateJwt = (req, res, next) => {
                 return res.status(403).json({ message: "Authentication failed" });
             }
             else {
+                // @ts-ignore
+                req.headers["username"] = user.username;
                 next();
             }
         });

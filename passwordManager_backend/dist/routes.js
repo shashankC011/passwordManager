@@ -26,31 +26,29 @@ router.post('/signup', (req, res) => __awaiter(void 0, void 0, void 0, function*
         try {
             const existingUser = yield schemas_1.UserMongoose.findOne({ username: user.data.username });
             if (existingUser) {
-                return res.status(400).json({ message: "User already exists" });
+                return res.status(400).json({ message: "User already exists", success: false });
             }
             else {
                 const newUser = new schemas_1.UserMongoose({ username: user.data.username, password: user.data.password });
                 try {
                     yield newUser.save();
                     const token = (0, middlewares_1.generateJwt)(user.data);
-                    return res.status(200).json({ message: "Signed Up successfully", token });
+                    return res.status(200).json({ message: "Signed Up successfully", token, success: true });
                 }
                 catch (error) {
                     console.error("Error Saving to UserMongoose: ", error);
-                    return res.status(500).json({ message: "Internal server error" });
+                    return res.status(500).json({ message: "Internal server error", success: false });
                 }
             }
         }
         catch (error) {
             console.error("Error reading UserMongoose: ", error);
-            res.status(500).json({ message: "Internal server error" });
+            res.status(500).json({ message: "Internal server error", success: false });
         }
     }
 }));
 router.post('/signin', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Request body:", req.body); // Add this line for debugging
     const user = schemas_1.UserZod.safeParse(req.body);
-    console.log("Parsed user:", user); // Add this line for debugging   
     if (!user.success) {
         (0, schemas_1.zodInputError)(user.error, res);
     }
@@ -81,6 +79,9 @@ router.get('/', middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, v
         console.error("Error reading dataMongoose: ", error);
         res.status(500).json({ message: "Internal server error" });
     }
+}));
+router.get('/me', middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.json({ username: req.headers["username"] });
 }));
 router.post('/', middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //add new site password data
@@ -158,7 +159,6 @@ router.delete("/:id", middlewares_1.authenticateJwt, (req, res) => __awaiter(voi
     else {
         try {
             const idObj = new mongoose_1.default.Types.ObjectId(id.data);
-            ;
             const deletedData = yield schemas_1.DataMongoose.findByIdAndDelete(idObj);
             if (deletedData) {
                 res.status(200).json({ message: "Site entry deleted successfully", deletedData });
