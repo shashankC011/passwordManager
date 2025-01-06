@@ -10,7 +10,7 @@ function Appbar(props: Props){
     let appbarRefresh = props.appbarRefresh;
     const setAppbarRefresh = props.setAppbarRefresh;
     const navigate = useNavigate();
-    const[user,setUser]= useState(null); //user contains only username
+    const[user,setUser]= useState(null); //user
     useEffect(()=>{
         const token = localStorage.getItem('Authorization');
         if(!token){
@@ -31,7 +31,7 @@ function Appbar(props: Props){
                     return;
                 }
                 const data = await res.json();
-                setUser(data.username);
+                setUser(data.user.username);
             }
             fetchData();
     },[appbarRefresh])

@@ -17,6 +17,8 @@ export const authenticateJwt = (req:Request,res:Response,next:NextFunction)=>{
             else{
                 // @ts-ignore
                 req.headers["username"] = user.username;
+                //@ts-ignore
+                console.log(user.username)
                 next();
             }
         })

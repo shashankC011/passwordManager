@@ -3,7 +3,7 @@ function Landing(){
     
     return(
         <div>
-            hello
+            hello hi 
         </div>
     )
 }

@@ -27,6 +27,7 @@ exports.DataZod = zod_1.z.object({
     websiteName: zod_1.z.string().min(1).optional(),
     username: zod_1.z.string(),
     password: zod_1.z.string().min(1),
+    user: zod_1.z.string().min(1)
 });
 exports.UserZod = zod_1.z.object({
     username: zod_1.z.string().min(1),
@@ -40,7 +41,8 @@ exports.DataMongooseSchema = new mongoose_1.default.Schema({
     url: { type: String, required: true },
     websiteName: { type: String, required: false },
     username: { type: String, required: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    user: { type: mongoose_1.default.Schema.ObjectId, require: true }
 });
 exports.UserMongoose = mongoose_1.default.model('User', UserMongooseSchema);
 exports.DataMongoose = mongoose_1.default.model('Data', exports.DataMongooseSchema);

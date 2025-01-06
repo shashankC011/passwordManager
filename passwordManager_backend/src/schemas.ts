@@ -17,6 +17,7 @@ export const DataZod = z.object({
     websiteName: z.string().min(1).optional(),
     username: z.string(),
     password: z.string().min(1),
+    user: z.string().min(1)
 })
 
 export const UserZod = z.object({
@@ -34,7 +35,8 @@ export const DataMongooseSchema = new mongoose.Schema({
     url: {type: String, required: true},
     websiteName: {type: String, required: false},
     username: {type: String, required: true},
-    password: {type: String, required: true}
+    password: {type: String, required: true},
+    user: {type:mongoose.Schema.ObjectId, require: true}
 })
 
 export const UserMongoose = mongoose.model('User',UserMongooseSchema);

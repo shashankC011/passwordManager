@@ -17,7 +17,8 @@
     "react-router-dom": "^6.22.2",
     "recoil": "^0.7.7",
     "tsc": "^2.0.4",
-    "typescript": "^5.4.3",
+    "typescript": "^5.7.2",
+    "vim": "^0.1.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

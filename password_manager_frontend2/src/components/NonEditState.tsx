@@ -1,26 +1,29 @@
-import { Typography } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import DeleteButton from "./deleteButton";
 import EditButton from "./EditButton";
+import { useState } from "react";
 interface Data{
-    url :String,
-    username :String,
-    password: String,
-    websiteName ?: String,
-    _id: String
+    url :string,
+    username :string,
+    password: string,
+    websiteName ?: string,
+    _id: string
 }
 interface Props{
     data: Data[],
     state:number,
     setState: React.Dispatch<React.SetStateAction<number>>,
-    renderEdit:boolean,
-    setRenderEdit: React.Dispatch<React.SetStateAction<boolean>>
 }
 function NonEditState(props:Props){
+
     const data = props.data;
+    const[tempDatumId,setTempDatumId] = useState("");
+    const[editButtonWebsiteName,setEditButtonWebsiteName] = useState("");
+    const[editButtonUsername,setEditButtonUsername] = useState("");
+    const[editButtonPassword,setEditButtonPassword] = useState("");
+    const[editButtonUrl,setEditButtonUrl] = useState("");
     const setState = props.setState;
-    const setRenderEdit = props.setRenderEdit;
     const state = props.state;
-    const renderEdit = props.renderEdit
     return(
         <div>
             <div style={{
@@ -62,13 +65,38 @@ function NonEditState(props:Props){
                                 {data && data.length > 0 ? (
                                     data.map((datum: Data) => {
                                         if (datum && datum.websiteName) {
-                                            return (
-                                                <div style={{
-                                                    padding: "3px"
-                                                }}>
-                                                    {datum.websiteName}
-                                                </div>
-                                            );
+                                            if(datum._id == tempDatumId){
+                                                return(
+                                                    <div style={{
+                                                        padding: "3px"
+                                                    }}>
+                                                        <TextField onChange={e=>setEditButtonWebsiteName(e.target.value)} variant = "outlined" sx={{
+                                                            "& .MuiOutlinedInput-root": {
+                                                                "&.Mui-focused fieldset": {
+                                                                    borderColor: "transparent", // Remove border color on focus
+                                                                }
+                                                            }
+                                                            }}
+                                                            InputProps={{ 
+                                                            style: {
+                                                                backgroundColor: "white",
+                                                                borderRadius: "50px",
+                                                                border: "1px solid #15a13a",
+                                                                height: 25,
+                                                            }}} 
+                                                        label="" defaultValue={editButtonWebsiteName}/>
+                                                    </div>
+                                                )
+                                            }
+                                            else{
+                                                return (
+                                                    <div style={{
+                                                        padding: "3px"
+                                                    }}>
+                                                        {datum.websiteName}
+                                                    </div>
+                                                );
+                                            }
                                         }
                                         return (
                                             <div>
@@ -99,13 +127,38 @@ function NonEditState(props:Props){
                                 {data && data.length > 0 ? (
                                     data.map((datum: Data) => {
                                         if (datum && datum.url) {
-                                            return (
-                                                <div style={{
-                                                    padding: "3px"
-                                                }}>
-                                                    {datum.username}
-                                                </div>
-                                            );
+                                            if(datum._id == tempDatumId){
+                                                return(
+                                                    <div style={{
+                                                        padding: "3px"
+                                                    }}>
+                                                        <TextField onChange={e=>setEditButtonUsername(e.target.value)} variant = "outlined" sx={{
+                                                            "& .MuiOutlinedInput-root": {
+                                                                "&.Mui-focused fieldset": {
+                                                                    borderColor: "transparent", // Remove border color on focus
+                                                                }
+                                                            }
+                                                            }}
+                                                            InputProps={{ 
+                                                            style: {
+                                                                backgroundColor: "white",
+                                                                borderRadius: "50px",
+                                                                border: "1px solid #15a13a",
+                                                                height: 25,
+                                                            }}} 
+                                                        label="" defaultValue={editButtonUsername}/>
+                                                    </div>
+                                                )
+                                            }
+                                            else{
+                                                return (
+                                                    <div style={{
+                                                        padding: "3px"
+                                                    }}>
+                                                        {datum.username}
+                                                    </div>
+                                                );
+                                            }   
                                         }
                                         return (
                                             <div>
@@ -138,13 +191,38 @@ function NonEditState(props:Props){
                                 {data && data.length > 0 ? (
                                     data.map((datum: Data) => {
                                         if (datum && datum.password) {
-                                            return (
-                                                <div style={{
-                                                    padding: "3px"
-                                                }}>
-                                                    {datum.password}
-                                                </div>
-                                            );
+                                            if(datum._id == tempDatumId){
+                                                return(
+                                                    <div style={{
+                                                        padding: "3px"
+                                                    }}>
+                                                        <TextField onChange={e=>setEditButtonPassword(e.target.value)} variant = "outlined" sx={{
+                                                            "& .MuiOutlinedInput-root": {
+                                                                "&.Mui-focused fieldset": {
+                                                                    borderColor: "transparent", // Remove border color on focus
+                                                                }
+                                                            }
+                                                            }}
+                                                            InputProps={{ 
+                                                            style: {
+                                                                backgroundColor: "white",
+                                                                borderRadius: "50px",
+                                                                border: "1px solid #15a13a",
+                                                                height: 25,
+                                                            }}} 
+                                                        label="" defaultValue={editButtonPassword}/>
+                                                    </div>
+                                                )
+                                            }
+                                            else{
+                                                return (
+                                                    <div style={{
+                                                        padding: "3px"
+                                                    }}>
+                                                        {datum.password}
+                                                    </div>
+                                                );
+                                            }
                                         }
                                         return (
                                             <div>
@@ -175,27 +253,67 @@ function NonEditState(props:Props){
                                 {data && data.length > 0 ? (
                                     data.map((datum: Data) => {
                                         if (datum && datum.url) {
-                                            return (
-                                                <div style={{
-                                                    textAlign:"center",
-                                                    flexDirection: "row",
-                                                    overflowWrap: "break-word", // Breaks lines at appropriate points 
-                                                    display: "flex", 
-                                                    justifyContent: "space-between", // Optional: adjust spacing between elements
-                                                    alignItems: "center",           // Aligns elements vertically in the center
-                                                    padding: "3px"
+                                            if(datum._id == tempDatumId){
+                                                return(
+                                                    <div style={{
+                                                        padding: "3px",
+                                                        textAlign:"center",
+                                                        flexDirection: "row",
+                                                        overflowWrap: "break-word", // Breaks lines at appropriate points 
+                                                        display: "flex", 
+                                                        justifyContent: "space-between", // Optional: adjust spacing between elements
+                                                        alignItems: "center"           // Aligns elements vertically in the center
                                                     }}>
                                                         <div></div>
-                                                        {datum.url}
-                                                        <div style={{
-                                                            display: "flex"
+                                                            <div style={{
+                                                                display: "flex"
+                                                            }}>
+                                                                <TextField onChange={e=>setEditButtonUrl(e.target.value)} variant = "outlined" sx={{
+                                                                    "& .MuiOutlinedInput-root": {
+                                                                        "&.Mui-focused fieldset": {
+                                                                            borderColor: "transparent", // Remove border color on focus
+                                                                        }
+                                                                    }
+                                                                    }}
+                                                                    InputProps={{ 
+                                                                    style: {
+                                                                        backgroundColor: "white",
+                                                                        borderRadius: "50px",
+                                                                        border: "1px solid #15a13a",
+                                                                        height: 25,
+                                                                    }}} 
+                                                                label="" defaultValue={editButtonUrl}/>
+                                                                <DeleteButton id = {datum._id} state = {state} setState = {setState}/>     
+                                                                <EditButton state = {state} setState = {setState} datumId = {datum._id} tempId = {tempDatumId} setTempId ={setTempDatumId} websiteName = {editButtonWebsiteName} setWebsiteName = {setEditButtonWebsiteName}
+                                                                 username = {editButtonUsername} setUsername = {setEditButtonUsername} password = {editButtonPassword} setPassword = {setEditButtonPassword} url = {editButtonUrl} setUrl = {setEditButtonUrl}/>
+                                                                </div>
+                                                    </div>
+                                                )
+                                            }
+                                            else{
+                                                return (
+                                                    <div style={{
+                                                        textAlign:"center",
+                                                        flexDirection: "row",
+                                                        overflowWrap: "break-word", // Breaks lines at appropriate points 
+                                                        display: "flex", 
+                                                        justifyContent: "space-between", // Optional: adjust spacing between elements
+                                                        alignItems: "center",           // Aligns elements vertically in the center
+                                                        padding: "3px"
                                                         }}>
-                                                        <DeleteButton id = {datum._id} state = {state} setState = {setState}/>     
-                                                        <EditButton renderEdit={renderEdit} setRenderEdit={setRenderEdit}/>
-                                                        </div>                     
-                                                </div>
-                                            
-                                            );
+                                                            <div></div>
+                                                            {datum.url}
+                                                            <div style={{
+                                                                display: "flex"
+                                                            }}>
+                                                            <DeleteButton id = {datum._id} state = {state} setState = {setState}/>     
+                                                            <EditButton state = {state} setState = {setState} datumId = {datum._id} tempId = {tempDatumId} setTempId ={setTempDatumId} websiteName = {editButtonWebsiteName} setWebsiteName = {setEditButtonWebsiteName}
+                                                                 username = {editButtonUsername} setUsername = {setEditButtonUsername} password = {editButtonPassword} setPassword = {setEditButtonPassword} url = {editButtonUrl} setUrl = {setEditButtonUrl}/>
+                                                            </div>                     
+                                                    </div>
+                                                
+                                                );
+                                            }
                                         }
                                         return (
                                             <div>

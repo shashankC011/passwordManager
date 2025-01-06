@@ -22,6 +22,8 @@ const authenticateJwt = (req, res, next) => {
             else {
                 // @ts-ignore
                 req.headers["username"] = user.username;
+                //@ts-ignore
+                console.log(user.username);
                 next();
             }
         });

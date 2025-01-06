@@ -69,10 +69,11 @@ router.post('/signin', (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
     }
 }));
-router.get('/', middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //get all stored site passowords and other data
+router.get('/users/:user', middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //get all stored site passowords and other data for a particular user
     try {
-        const data = yield schemas_1.DataMongoose.find({});
+        const user = req.params.user;
+        const data = yield schemas_1.DataMongoose.find({ user: user });
         res.status(200).json({ data });
     }
     catch (error) {
@@ -81,7 +82,9 @@ router.get('/', middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, v
     }
 }));
 router.get('/me', middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.json({ username: req.headers["username"] });
+    console.log(req.headers["username"]);
+    const user = yield schemas_1.UserMongoose.findOne({ username: req.headers["username"] });
+    res.json({ user: user });
 }));
 router.post('/', middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //add new site password data
@@ -101,7 +104,7 @@ router.post('/', middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, 
         }
     }
 }));
-router.get(`/:id`, middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get(`/data/:id`, middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //get a particular site entry
     const id = schemas_1.idZod.safeParse(req.params.id);
     if (!id.success) {
@@ -124,7 +127,7 @@ router.get(`/:id`, middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0
         }
     }
 }));
-router.put(`/:id`, middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put(`/data/:id`, middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //edit a data entry
     const id = schemas_1.idZod.safeParse(req.params.id);
     const data = schemas_1.DataZod.safeParse(req.body);
@@ -151,7 +154,7 @@ router.put(`/:id`, middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0
         }
     }
 }));
-router.delete("/:id", middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete("/data/:id", middlewares_1.authenticateJwt, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = schemas_1.idZod.safeParse(req.params.id);
     if (!id.success) {
         (0, schemas_1.zodInputError)(id.error, res);

@@ -60,10 +60,11 @@ router.post('/signin',async(req:Request,res)=>{
     }
 })
 
-router.get('/',authenticateJwt,async(req:Request,res:Response)=>{
-    //get all stored site passowords and other data
+router.get('/users/:user',authenticateJwt,async(req:Request,res:Response)=>{
+    //get all stored site passowords and other data for a particular user
     try{
-        const data = await DataMongoose.find({});
+        const user = req.params.user;
+        const data = await DataMongoose.find({user: user});
         res.status(200).json({data});
     }
     catch(error){
@@ -73,8 +74,10 @@ router.get('/',authenticateJwt,async(req:Request,res:Response)=>{
 })
 
 router.get('/me',authenticateJwt,async(req:Request,res:Response)=>{  //accessed to make appbar dynamic(called when appbar is loaded) or to get the username
-    res.json({username: req.headers["username"]})
-})
+    console.log(req.headers["username"])
+    const user = await UserMongoose.findOne({username:req.headers["username"]})
+res.json({user: user})
+})  
 
 router.post('/',authenticateJwt,async(req:Request,res:Response)=>{
     //add new site password data
@@ -95,7 +98,7 @@ router.post('/',authenticateJwt,async(req:Request,res:Response)=>{
     }
 })
 
-router.get(`/:id`,authenticateJwt,async(req,res)=>{
+router.get(`/data/:id`,authenticateJwt,async(req,res)=>{
     //get a particular site entry
     const id = idZod.safeParse(req.params.id);
     if(!id.success){
@@ -119,7 +122,7 @@ router.get(`/:id`,authenticateJwt,async(req,res)=>{
     }
 })
 
-router.put(`/:id`,authenticateJwt,async(req,res)=>{
+router.put(`/data/:id`,authenticateJwt,async(req,res)=>{
     //edit a data entry
     const id = idZod.safeParse(req.params.id);
     const data = DataZod.safeParse(req.body);
@@ -148,7 +151,7 @@ router.put(`/:id`,authenticateJwt,async(req,res)=>{
     }
 })
 
-router.delete("/:id",authenticateJwt,async(req,res)=>{
+router.delete("/data/:id",authenticateJwt,async(req,res)=>{
     const id = idZod.safeParse(req.params.id);
     if(!id.success){
         zodInputError(id.error,res);

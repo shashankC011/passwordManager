@@ -17,7 +17,7 @@ const DeleteButton: React.FC<Props> = (props: Props): JSX.Element => {
                     color: "black"
                 }}
                 onClick={async()=>{
-                    const res = await fetch(`http://localhost:5005/${id}`,{
+                    const res = await fetch(`http://localhost:5005/data/${id}`,{
                         method: "DELETE",
                         headers: {
                             'Content-Type': 'application/json',
